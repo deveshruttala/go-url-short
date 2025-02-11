@@ -1,0 +1,10 @@
+*.db
+*logs
+*tmp
+!out/.keep
+*shm
+*wal
+
+outdb/
+out/*
+

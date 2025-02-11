@@ -1,0 +1,10 @@
+[Unit]
+Description=Timer to sync SQLite DB to S3 every 24 hours
+
+[Timer]
+OnBootSec=10min
+OnUnitActiveSec=22h
+Unit=syncs3.service
+
+[Install]
+WantedBy=timers.target

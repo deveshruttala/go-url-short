@@ -1,0 +1,16 @@
+[Unit]
+Description=Shortnr Service
+After=network.target
+
+[Service]
+ExecStart=/app/shortner/bin/server
+WorkingDirectory=/app/shortner
+EnvironmentFile=/app/shortner/.env
+Restart=always
+StandardOutput=append:/tmp/log/shortnr.out.log
+StandardError=append:/tmp/log/shortnr.err.log
+User=ec2-user
+PIDFile=/tmp/run/shortnr.pid
+
+[Install]
+WantedBy=multi-user.target

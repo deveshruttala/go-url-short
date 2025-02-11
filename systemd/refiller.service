@@ -1,0 +1,15 @@
+[Unit]
+Description=Add more short keys
+After=network.target
+
+[Service]
+ExecStart=/app/shortner/bin/cli refill
+WorkingDirectory=/app/shortner
+EnvironmentFile=/app/shortner/.env
+User=ec2-user
+; Restart=on-failure
+StandardOutput=append:/tmp/log/shrtnr-refill.out.log
+StandardError=append:/tmp/log/shrtnr-refill.err.log
+
+[Install]
+WantedBy=multi-user.target

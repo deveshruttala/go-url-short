@@ -1,0 +1,11 @@
+[
+  {
+    "name": "memcached",
+    "script": "memcached",
+    "args": ["-u", "root"]
+  },
+  {
+    "name": "server",
+    "script": "/usr/local/bin/server"
+  }
+]

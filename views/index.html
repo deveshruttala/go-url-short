@@ -1,0 +1,190 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ad-Free URL Shortener | Fast, Secure, and Simple</title>
+    <meta name="description" content="Looking for the best ad-free URL shortener? Our tool provides fast, secure, and reliable URL shortening with no intrusive ads. Try it now for free!">
+    <meta name="keywords" content="ad-free URL shortener, best URL shortener, free URL shortener, secure URL shortener, fast URL shortener, no ads">
+    <meta name="author" content="ikouchiha47">
+    <link rel="canonical" href="{{.DomainName}}">
+    <meta property="og:title" content="Best Ad-Free URL Shortener | Fast, Secure, and Simple">
+    <meta property="og:description" content="Experience hassle-free URL shortening with our ad-free platform. Get short links quickly and securely without ads. Perfect for professional use!">
+    <meta property="og:url" content="{{.DomainName}}">
+    <meta property="og:image" content="{{.DomainName}}/images/og-image.png">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="Ad free URL shortner">
+    <meta name="twitter:title" content="Best Ad-Free URL Shortener">
+    <meta name="twitter:description" content="Shorten your URLs with the best ad-free tool. Secure, fast, and completely free. Get started now!">
+    <meta name="twitter:image" content="{{.DomainName}}/images/twitter-image.png">
+
+    <link rel="icon" href="{{.DomainName}}/images/favicon.png" type="image/png">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+    }
+
+    body {
+      background-color: #151414;
+      color: white;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    h1 {
+      font-family: monospace;
+      font-weight: bold;
+      font-size: 2.5rem;
+    }
+
+    .container {
+      text-align: center;
+      max-width: 480px;
+      width: 88%;
+    }
+
+    .input-group {
+      display: flex;
+      width: 100%;
+      align-items: center;
+      margin-top: 16px;
+    }
+
+    input {
+      flex: 1;
+      padding: 20px;
+      font-size: 16px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      background-color: #333;
+      color: white;
+    }
+
+    button {
+      padding: 18px;
+      background-color: #9b4dca;
+      border: none;
+      border-radius: 5px;
+      font-size: 18px;
+      color: white;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+
+    button i {
+      font-size: 20px;
+    }
+
+    button:hover {
+      background-color: #7b35b0;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
+      display: block;
+      text-decoration: none;
+      color: #9d2fdf;
+      font-weight: 700;
+      background: #e2e2e2;
+      padding: 16px;
+      border-radius: 12px;
+      font-family: monospace;
+      visibility: hidden;
+      transition: all 1s ease-in;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>url please</h1>
+    <div class="input-group">
+      <input type="text" id="urlInput" placeholder="Enter URL" />
+      <button onclick="shortenUrl()"><i class="fas fa-cut"></i></button>
+    </div>
+    <a id="result"></a>
+  </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const titleText = document.title;
+      let index = 0;
+
+      function scrollTitle() {
+        document.title = titleText.substring(index) + titleText.substring(0, index);
+        index = (index + 1) % titleText.length;
+        
+        // requestAnimationFrame(scrollTitle)
+        setTimeout(scrollTitle, 160);
+      }
+
+      scrollTitle();
+    });
+
+    async function shortenUrl() {
+      const url = document.getElementById('urlInput').value;
+      const resultDiv = document.getElementById('result');
+
+      if (!url) {
+        resultDiv.textContent = "Please enter a URL.";
+        return;
+      }
+
+
+      resultDiv.style.visibility = 'hidden'
+
+      try {
+        const authKey = await crypto.subtle.generateKey(
+          { name: "HMAC", hash: "SHA-256" },
+          true, 
+          ["sign", "verify"]
+        );
+        
+        const exportedKey = await crypto.subtle.exportKey("raw", authKey);
+        const authKeyString = Array.from(new Uint8Array(exportedKey))
+                                     .map(byte => byte.toString(16).padStart(2, '0'))
+                                     .join('');
+
+        const headers = {
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+          "Host": window.location.hostname,
+          "User-Agent": navigator.userAgent,
+          "AuthKey": authKeyString
+        };
+
+        const apiEndpoint = "{{.APIEndpoint}}"; 
+
+        const response = await fetch(apiEndpoint, {
+          method: 'POST',
+          headers: headers,
+          body: JSON.stringify({ url: url }),
+        });
+
+        const data = await response.json();
+
+
+        if (response.ok) {
+          resultDiv.textContent = `${data.url}`;
+          resultDiv.href = `${data.url}`;
+        } else {
+          resultDiv.textContent = `Error: ${data.error || 'Something went wrong'}`;
+        }
+
+        resultDiv.style.visibility = 'visible'
+      } catch (error) {
+        resultDiv.textContent = `Error: ${error.message}`;
+      }
+    }
+  </script>
+
+</body>
+</html>

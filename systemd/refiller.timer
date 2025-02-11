@@ -1,0 +1,10 @@
+[Unit]
+Description=Timer to add more short keys for shortner
+
+[Timer]
+OnBootSec=10min
+OnUnitActiveSec=60d
+Unit=refiller.service
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,10 @@
+[Unit]
+Description=Renew Let's Encrypt certificates
+Wants=certbot.service
+
+[Timer]
+OnCalendar=*-*-* 00,12:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

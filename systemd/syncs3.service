@@ -1,0 +1,15 @@
+[Unit]
+Description=Sync SQLite DB to S3
+After=network.target
+
+[Service]
+ExecStart=/app/shortner/bin/cli backup 
+WorkingDirectory=/app/shortner
+EnvironmentFile=/app/shortner/.env
+User=ec2-user
+; Restart=on-failure
+StandardOutput=append:/tmp/log/sync-s3.out.log
+StandardError=append:/tmp/log/sync-s3.err.log
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,13 @@
+*.db
+*logs
+*tmp
+bin/*
+!bin/.keep
+*shm
+*wal
+*.env
+!*.env.dev
+
+outdb/
+out/*
+
